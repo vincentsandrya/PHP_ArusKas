@@ -3,12 +3,17 @@
 
 <?php include "include/config.php";?>
 <?php 
+ob_start();
+session_start();
+if(!isset($_SESSION['username']))
+  header("location:login/index.php");
+
 date_default_timezone_set("Asia/Bangkok"); 
 function rupiah($angka){
-  
+
   $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
   return $hasil_rupiah;
- 
+
 }
 
 ?>
@@ -266,7 +271,7 @@ function rupiah($angka){
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="#">
+              <a class="dropdown-item d-flex align-items-center" href="logout.php">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
