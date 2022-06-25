@@ -6,7 +6,7 @@
 date_default_timezone_set("Asia/Bangkok"); 
 function rupiah($angka){
   
-  $hasil_rupiah = "Rp " . number_format($angka,2,',','.');cscsc
+  $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
   return $hasil_rupiah;
  
 }
