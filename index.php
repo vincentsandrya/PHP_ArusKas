@@ -2,7 +2,10 @@
 
 <?php
 
-$StartDate = date ('Y/m/26', strtotime(date("Y-m-d"). ' - 1 months'));
+if(date ('Y/m/26') > date('Y/m/d'))
+  $StartDate = date ('Y/m/26', strtotime(date("Y-m-d"). ' - 1 months'));
+else
+  $StartDate = date ('Y/m/26');
 
 $sqlQueryRecentTrans = mysqli_query($connection, 
   "SELECT a.tanggalTrans, a.TransaksiID, CONCAT(CONCAT(b.KategoriName,' - '),a.catatan) as 'desc', a.nominal 
@@ -13,9 +16,10 @@ $sqlQueryRecentTrans = mysqli_query($connection,
 $sqlQueryKebutuhan = mysqli_query($connection, 
   "SELECT c.KategoriName , b.Amount - sum(ifnull(d.nominal,0)) as sisa, round(((b.Amount - sum(ifnull(d.nominal,0))) / b.Amount * 100),0) as sisaPrcntg 
   FROM (
-  SELECT max(EffectiveDate), BudgetingHeaderID 
+  SELECT EffectiveDate, BudgetingHeaderID 
   from budgetingheader 
-  group by BudgetingHeaderID) 
+  order by EffectiveDate DESC
+  LIMIT 1) 
   as a
   JOIN budgetingdetail b on a.BudgetingHeaderID = b.BudgetingHeaderID
   JOIN kategori c on b.KategoriID = c.KategoriID
@@ -27,9 +31,10 @@ $sqlQueryKebutuhan = mysqli_query($connection,
 $sqlQueryKeinginan = mysqli_query($connection, 
   "SELECT c.KategoriName , b.Amount - sum(ifnull(d.nominal,0)) as sisa, round(((b.Amount - sum(ifnull(d.nominal,0))) / b.Amount * 100),0) as sisaPrcntg 
   FROM (
-  SELECT max(EffectiveDate), BudgetingHeaderID 
+  SELECT EffectiveDate, BudgetingHeaderID 
   from budgetingheader 
-  group by BudgetingHeaderID) 
+  order by EffectiveDate DESC
+  LIMIT 1) 
   as a
   JOIN budgetingdetail b on a.BudgetingHeaderID = b.BudgetingHeaderID
   JOIN kategori c on b.KategoriID = c.KategoriID
