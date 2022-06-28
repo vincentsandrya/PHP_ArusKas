@@ -11,10 +11,11 @@ $sqlQueryRecentTrans = mysqli_query($connection,
   "SELECT a.tanggalTrans, a.TransaksiID, CONCAT(CONCAT(b.KategoriName,' - '),a.catatan) as 'desc', a.nominal 
   FROM transaksi a 
   join kategori b on a.KategoriID = b.KategoriID 
-  WHERE a.tanggalTrans >= '$StartDate'");
+  WHERE a.tanggalTrans >= '$StartDate'
+  ORDER BY a.tanggalTrans DESC");
 
 $sqlQueryKebutuhan = mysqli_query($connection, 
-  "SELECT c.KategoriName , b.Amount - sum(ifnull(d.nominal,0)) as sisa, round(((b.Amount - sum(ifnull(d.nominal,0))) / b.Amount * 100),0) as sisaPrcntg 
+  "SELECT c.KategoriName , b.Amount + sum(ifnull(d.nominal,0)) as sisa, round(((b.Amount + sum(ifnull(d.nominal,0))) / b.Amount * 100),0) as sisaPrcntg 
   FROM (
   SELECT EffectiveDate, BudgetingHeaderID 
   from budgetingheader 
@@ -29,7 +30,7 @@ $sqlQueryKebutuhan = mysqli_query($connection,
 );
 
 $sqlQueryKeinginan = mysqli_query($connection, 
-  "SELECT c.KategoriName , b.Amount - sum(ifnull(d.nominal,0)) as sisa, round(((b.Amount - sum(ifnull(d.nominal,0))) / b.Amount * 100),0) as sisaPrcntg 
+  "SELECT c.KategoriName , b.Amount + sum(ifnull(d.nominal,0)) as sisa, round(((b.Amount + sum(ifnull(d.nominal,0))) / b.Amount * 100),0) as sisaPrcntg 
   FROM (
   SELECT EffectiveDate, BudgetingHeaderID 
   from budgetingheader 
@@ -135,7 +136,7 @@ $rowKeinginan = mysqli_fetch_array($sqlQueryKeinginan);
                     <i class="bi bi-currency-dollar"></i>
                   </div>
                   <div class="ps-3">
-                    <h5><?php echo rupiah($rowKebutuhan["sisa"]) ?></h5>
+                    <h5><?php echo rupiah($rowKeinginan["sisa"]) ?></h5>
                     <span class="text-muted small pt-2 ps-1">Sisa</span>
                     <span class="text-success small pt-1 fw-bold"><?php echo $rowKeinginan["sisaPrcntg"] ?>%</span>
 
@@ -170,9 +171,9 @@ $rowKeinginan = mysqli_fetch_array($sqlQueryKeinginan);
                 <table class="table table-borderless datatable">
                   <thead>
                     <tr>
-                      <th scope="col">Transaction Date</th>
-                      <th scope="col">Transaction ID</th>
-                      <th scope="col">Category - Notes</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">ID</th>
+                      <th scope="col">Desc</th>
                       <th scope="col">Amount</th>
                     </tr>
                   </thead>
@@ -185,7 +186,7 @@ $rowKeinginan = mysqli_fetch_array($sqlQueryKeinginan);
                         <th scope="row"><?php echo $row["tanggalTrans"] ?></th>
                         <td><a href="#" class="text-primary"><?php echo $row["TransaksiID"] ?></a></td>
                         <td><?php echo $row["desc"] ?></td>
-                        <td><?php echo rupiah($row["nominal"]) ?></td>
+                        <td style="text-align:right;"><?php echo $row["nominal"] ?></td>
                       </tr>
                       <?php 
                     }

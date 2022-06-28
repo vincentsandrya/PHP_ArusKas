@@ -163,7 +163,7 @@ $sqlQueryMetodePembayaran2 = mysqli_query($connection, "SELECT metodePembayaranI
                   {
                     // var_dump($rowKategori);
                     ?>
-                    <option value="<?php echo $rowKategori["KategoriID"]?>">
+                    <option value="<?php echo $rowKategori["kategoriID"]?>">
                       <?php echo $rowKategori["kategoriName"]?>
                     </option>
                     <?php
